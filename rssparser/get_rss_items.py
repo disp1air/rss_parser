@@ -1,13 +1,18 @@
 def get_rss_items(rss_tree, limit):
-    # get rss tag
+    # get the rss tag from a rss_tree
     channel = rss_tree[0]
-    all_items = []
-
-    for item in channel:
-        if item.tag == 'item':
-            all_items.append(item)
+    items = []
 
     if limit:
-        return all_items[:limit]
+        for item in channel:
+            if len(items) == limit:
+                return items
+
+            if item.tag == 'item':
+                items.append(item)
     else:
-        return all_items
+        for item in channel:
+            if item.tag == 'item':
+                items.append(item)
+
+    return items
