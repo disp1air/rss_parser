@@ -1,8 +1,16 @@
 import json
 
 
-def rss_to_json(items):
+def rss_to_json(child_exept_items, items):
     resultDict = {}
+
+    for child in child_exept_items:
+        if (child.text.rstrip()):
+            resultDict[child.tag] = child.text
+        else:
+            resultDict[child.tag] = {}
+            for i in child:
+                resultDict[child.tag][i.tag] = i.text
 
     for index, item in enumerate(items):
         resultDict[f'item{index}'] = {}
