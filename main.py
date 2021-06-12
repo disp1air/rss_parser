@@ -1,6 +1,6 @@
 import requests
 from xml.etree import ElementTree
-from rssparser.get_args import getArgs
+from rssparser.get_args import get_args
 from rssparser.rss_to_json import rss_to_json
 from rssparser.print_rss_item import print_rss_item, print_child_exept_items
 from rssparser.get_rss_items import get_rss_items, get_child_exept_items
@@ -16,7 +16,7 @@ def getRssTree(text):
 
 
 def main():
-    args = getArgs()
+    args = get_args()
 
     if not args.source:
         print(args.version)
