@@ -38,8 +38,4 @@ def getArgs():
     )
 
     args = parser.parse_args()
-
-    if not args.source:
-        print(args.version)
-    # sys.stdout.write(str(args))
     return args

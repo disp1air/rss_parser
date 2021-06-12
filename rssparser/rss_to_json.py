@@ -5,7 +5,7 @@ def rss_to_json(child_exept_items, items):
     resultDict = {}
 
     for child in child_exept_items:
-        if (child.text.rstrip()):
+        if (child.text and child.text.rstrip()):
             resultDict[child.tag] = child.text
         else:
             resultDict[child.tag] = {}

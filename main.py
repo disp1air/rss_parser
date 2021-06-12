@@ -17,18 +17,23 @@ def getRssTree(text):
 
 def main():
     args = getArgs()
-    textNews = getNewsText('https://news.yahoo.com/rss/')
-    tree = getRssTree(textNews)
-    childExeptItems = get_child_exept_items(tree)
-    items = get_rss_items(tree, args.limit)
 
-    if args.json:
-        rss_to_json(childExeptItems, items)
+    if not args.source:
+        print(args.version)
+        # sys.stdout.write(str(args))
     else:
-        print_child_exept_items(childExeptItems)
+        textNews = getNewsText(args.source)
+        tree = getRssTree(textNews)
+        childExeptItems = get_child_exept_items(tree)
+        items = get_rss_items(tree, args.limit)
 
-        for item in items:
-            print_rss_item(item)
+        if args.json:
+            rss_to_json(childExeptItems, items)
+        else:
+            print_child_exept_items(childExeptItems)
+
+            for item in items:
+                print_rss_item(item)
 
 
 if __name__ == '__main__':

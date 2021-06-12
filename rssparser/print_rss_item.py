@@ -16,7 +16,7 @@ def print_rss_item(rss_item):
 
 def print_child_exept_items(child_exept_items):
     for child in child_exept_items:
-        if (child.text.rstrip()):
+        if (child.text and child.text.rstrip()):
             print(f'{child.tag}: {child.text}')
         else:
             print(child.tag)
