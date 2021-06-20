@@ -36,6 +36,11 @@ def get_args():
         type=bool,
         help='Outputs verbose status messages'
     )
+    parser.add_argument(
+        '--to-html',
+        type=str,
+        help='The format you want to convert news to'
+    )
 
     args = parser.parse_args()
     return args
