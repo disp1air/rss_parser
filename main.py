@@ -1,7 +1,7 @@
 import requests
 from xml.etree import ElementTree
 from rssparser.get_args import get_args
-from rssparser.rss_to_json import rss_to_json, toHtml
+from rssparser.rss_to_json import rss_to_json, toHtml, toPdf
 from rssparser.print_rss_item import print_rss_item, print_child_exept_items
 from rssparser.get_rss_items import get_rss_items, get_child_exept_items
 
@@ -31,6 +31,8 @@ def main():
             rss_to_json(childExeptItems, items)
         elif args.to_html:
             toHtml(items, args.to_html)
+        elif args.to_pdf:
+            toPdf(items, args.to_pdf)
         else:
             print_child_exept_items(childExeptItems)
 

@@ -1,5 +1,6 @@
 import json
 from datetime import datetime
+import pdfkit
 
 path_to_store = 'rssparser/data/store.json'
 
@@ -80,3 +81,9 @@ def toHtml(items, path_to_save_html):
         ff.write(html_header)
         ff.write(result_str)
         ff.write(html_bottom)
+
+
+def toPdf(items, path_to_save_pdf):
+    result_dict = rss_to_dict({}, items)
+    json_object = json.dumps(result_dict, indent=4)
+    pdfkit.from_string(json_object, path_to_save_pdf)

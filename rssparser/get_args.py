@@ -41,6 +41,11 @@ def get_args():
         type=str,
         help='The format you want to convert news to'
     )
+    parser.add_argument(
+        '--to-pdf',
+        type=str,
+        help='The format you want to convert news to'
+    )
 
     args = parser.parse_args()
     return args
