@@ -34,6 +34,8 @@ def get_args():
     parser.add_argument(
         '--verbose',
         type=bool,
+        nargs='?',
+        const=True,
         help='Outputs verbose status messages'
     )
     parser.add_argument(

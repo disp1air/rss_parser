@@ -33,7 +33,7 @@ def main():
             toHtml(items, args.to_html)
         elif args.to_pdf:
             toPdf(items, args.to_pdf)
-        else:
+        elif args.verbose:
             print_child_exept_items(childExeptItems)
 
             for item in items:
