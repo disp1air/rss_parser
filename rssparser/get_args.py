@@ -15,7 +15,6 @@ def get_args():
         '--version',
         type=str,
         nargs='?',
-        default='Version 1.0',
         const='Version 1.0',
         help='Print version info'
     )
@@ -37,6 +36,12 @@ def get_args():
         nargs='?',
         const=True,
         help='Outputs verbose status messages'
+    )
+    parser.add_argument(
+        '--date',
+        type=str,
+        default=None,
+        help='Publishing date of news'
     )
     parser.add_argument(
         '--to-html',
