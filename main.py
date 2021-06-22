@@ -1,43 +1,99 @@
+import sys
 import requests
 from xml.etree import ElementTree
 from rssparser.get_args import get_args
-from rssparser.rss_to_json import rss_to_json, toHtml, toPdf
+from rssparser.rss_to_json import to_json, to_html, to_pdf
 from rssparser.print_rss_item import print_rss_item, print_child_exept_items
 from rssparser.get_rss_items import get_rss_items, get_child_exept_items
+from rssparser.filter import filter_by_date, filter_by_limit
+import json
 
 
-def getNewsText(url):
+def get_data_from_non_local(url):
+    text_news = get_news_text(url)
+    tree = get_rss_tree(text_news)
+    childExeptItems = get_child_exept_items(tree)
+    items = get_rss_items(tree)
+    list_items = rss_items_to_list(items)
+    store_data_to_local(list_items)
+    return list_items
+
+
+def get_news_text(url):
     response = requests.get(url)
     return response.text
 
 
-def getRssTree(text):
+def get_rss_tree(text):
     return ElementTree.fromstring(text)
+
+
+def store_data_to_local(data):
+    with open('./rssparser/data/store.txt', 'w') as ff:
+        ff.write(json.dumps(data))
+
+
+def get_data_from_local():
+    with open('rssparser/data/store.txt') as f:
+        data = f.read()
+    return json.loads(data)
+
+
+def rss_items_to_list(list_of_items):
+    result = []
+    for item in list_of_items:
+        parsed_item = item_to_dict(item)
+        result.append(parsed_item)
+
+    print(result)
+    return result
+
+
+def item_to_dict(item):
+    result_item = {}
+
+    for element in item:
+        print(element)
+        if element.tag and element.text:
+            result_item[element.tag] = element.text
+        if element.attrib:
+            result_item[f'{element.tag}_attrib'] = {}
+            for attrib in element.attrib:
+                result_item[f'{element.tag}_attrib'][attrib] = element.attrib[attrib]
+
+    return result_item
+
+
+def print_verbose(items):
+    for item in items:
+        for key, value in item.items():
+            print(f'{key}: {value}')
+        print('===================================')
 
 
 def main():
     args = get_args()
 
-    if not args.source:
-        print(args.version)
-        # sys.stdout.write(str(args))
+    if args.version:
+        sys.exit(args.version)
+
+    if args.source:
+        items_list = get_data_from_non_local('https://news.yahoo.com/rss/')
     else:
-        textNews = getNewsText(args.source)
-        tree = getRssTree(textNews)
-        childExeptItems = get_child_exept_items(tree)
-        items = get_rss_items(tree, args.limit)
+        items_list = get_data_from_local()
 
-        if args.json:
-            rss_to_json(childExeptItems, items)
-        elif args.to_html:
-            toHtml(items, args.to_html)
-        elif args.to_pdf:
-            toPdf(items, args.to_pdf)
-        elif args.verbose:
-            print_child_exept_items(childExeptItems)
-
-            for item in items:
-                print_rss_item(item)
+    if args.date:
+        items_list = filter_by_date(items_list, args.date)
+    if args.limit:
+        items_list = filter_by_limit(items_list, args.limit)
+    if args.json:
+        to_json(items_list)
+    if args.verbose:
+        print_verbose(items_list)
+    if args.to_html:
+        to_html(items_list)
+    if args.to_pdf:
+        to_pdf(items_list)
 
 
 if __name__ == '__main__':

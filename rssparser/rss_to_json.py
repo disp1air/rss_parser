@@ -1,32 +1,24 @@
 import json
 from datetime import datetime
+import sys
 import pdfkit
 
 path_to_store = 'rssparser/data/store.json'
 
 
-def rss_to_json(child_exept_items, items):
-    result_dict = rss_to_dict(child_exept_items, items)
+def to_json(items):
+    result_dict = rss_to_dict(items)
     json_object = json.dumps(result_dict, indent=4)
-    # store_data(json_object)
-    print(json_object)
+    sys.stdout.write(json_object)
 
 
-def rss_to_dict(child_exept_items, items):
+def rss_to_dict(items):
     result = {}
 
-    for child in child_exept_items:
-        if child.text and child.text.rstrip():
-            result[child.tag] = child.text
-        else:
-            result[child.tag] = {}
-            for i in child:
-                result[child.tag][i.tag] = i.text
-
     for index, item in enumerate(items):
-        result[f'item{index}'] = {}
+        result[f'item{index + 1}'] = {}
         for i in item:
-            result[f'item{index}'][i.tag] = i.text if i.text else ''
+            result[f'item{index + 1}'][i] = item[i]
 
     return result
 
@@ -56,7 +48,7 @@ def fetchDataFromStore(requested_date):
     print(result)
 
 
-def toHtml(items, path_to_save_html):
+def to_html(items, path_to_save_html):
     result_str = ''
     result_dict = rss_to_dict({}, items)
     html_header = '''<!DOCTYPE html><html lang="en"><head>
@@ -83,7 +75,7 @@ def toHtml(items, path_to_save_html):
         ff.write(html_bottom)
 
 
-def toPdf(items, path_to_save_pdf):
+def to_pdf(items, path_to_save_pdf):
     result_dict = rss_to_dict({}, items)
     json_object = json.dumps(result_dict, indent=4)
     pdfkit.from_string(json_object, path_to_save_pdf)
