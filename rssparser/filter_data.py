@@ -8,6 +8,7 @@ def filter_by_date(list, requested_date):
         if isinstance(item, dict) and item.get('pubDate'):
             date_obj = datetime.strptime(
                 item.get('pubDate'),
+                # '%a, %d %b %Y %H:%M:%S %z'
                 '%Y-%m-%dT%H:%M:%SZ'
             )
 

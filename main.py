@@ -1,35 +1,24 @@
 import sys
+import json
 import requests
 from xml.etree import ElementTree
 from rssparser.get_args import get_args
 from rssparser.rss_to_json import to_json, to_html, to_pdf
-from rssparser.print_rss_item import print_rss_item, print_child_exept_items
-from rssparser.get_rss_items import get_rss_items, get_child_exept_items
-from rssparser.filter import filter_by_date, filter_by_limit
-import json
+from rssparser.get_rss_items import get_rss_items
+from rssparser.filter_data import filter_by_date, filter_by_limit
 
 
 def get_data_from_non_local(url):
-    text_news = get_news_text(url)
-    tree = get_rss_tree(text_news)
-    childExeptItems = get_child_exept_items(tree)
-    items = get_rss_items(tree)
-    list_items = rss_items_to_list(items)
-    store_data_to_local(list_items)
-    return list_items
-
-
-def get_news_text(url):
     response = requests.get(url)
-    return response.text
-
-
-def get_rss_tree(text):
-    return ElementTree.fromstring(text)
+    tree = ElementTree.fromstring(response.text)
+    items = get_rss_items(tree)
+    items_list = rss_items_to_list(items)
+    store_data_to_local(items_list)
+    return items_list
 
 
 def store_data_to_local(data):
-    with open('./rssparser/data/store.txt', 'w') as ff:
+    with open('rssparser/data/store.txt', 'w') as ff:
         ff.write(json.dumps(data))
 
 
@@ -44,8 +33,6 @@ def rss_items_to_list(list_of_items):
     for item in list_of_items:
         parsed_item = item_to_dict(item)
         result.append(parsed_item)
-
-    print(result)
     return result
 
 
@@ -53,7 +40,6 @@ def item_to_dict(item):
     result_item = {}
 
     for element in item:
-        print(element)
         if element.tag and element.text:
             result_item[element.tag] = element.text
         if element.attrib:

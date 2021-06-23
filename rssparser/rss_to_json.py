@@ -1,9 +1,6 @@
 import json
-from datetime import datetime
 import sys
 import pdfkit
-
-path_to_store = 'rssparser/data/store.json'
 
 
 def to_json(items):
@@ -21,31 +18,6 @@ def rss_to_dict(items):
             result[f'item{index + 1}'][i] = item[i]
 
     return result
-
-
-def store_data(data):
-    with open(path_to_store, 'w') as ff:
-        ff.write(data)
-
-
-def fetchDataFromStore(requested_date):
-    result = {}
-
-    with open(path_to_store) as f:
-        data = json.load(f)
-
-    for key, value in data.items():
-        if isinstance(value, dict) and value.get('pubDate'):
-            date_obj = datetime.strptime(
-                value.get('pubDate'),
-                '%a, %d %b %Y %H:%M:%S %z'
-            )
-            print(date_obj)
-
-            if requested_date == date_obj.date().strftime('%Y%m%d'):
-                result[key] = value
-
-    print(result)
 
 
 def to_html(items, path_to_save_html):
