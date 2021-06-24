@@ -1,3 +1,4 @@
+import os
 import json
 import sys
 import pdfkit
@@ -22,7 +23,6 @@ def rss_to_dict(items):
 
 def to_html(items, path_to_save_html):
     result_str = ''
-    result_dict = rss_to_dict({}, items)
     html_header = '''<!DOCTYPE html><html lang="en"><head>
         <meta charset="UTF-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -30,14 +30,19 @@ def to_html(items, path_to_save_html):
         <title>Document</title>
     </head><body>'''
 
-    for key, value in result_dict.items():
-        result_str += f'<h2>{key}</h2>'
-        for k, v in value.items():
-            if k and v:
+    for item in items:
+        for k, v in item.items():
+            if k and v and isinstance(v, str):
                 if k == 'link':
                     result_str += f'<a href="{v}">Related link</a>'
                 else:
-                    result_str += f'<p><b>{k}</b>: {v}</p>'
+                    result_str += f'<p style="margin:0"><b>{k}</b>: {v}</p>'
+            if k and v and isinstance(v, dict):
+                for key, value in v.items():
+                    if key == 'url' and k != 'source_attrib':
+                        result_str += f'<img src="{value}">'
+                    else:
+                        result_str += f'<p style="margin:0"><b>{key}</b>: {value}</p>'
 
     html_bottom = '''</body></html>'''
 
@@ -48,6 +53,6 @@ def to_html(items, path_to_save_html):
 
 
 def to_pdf(items, path_to_save_pdf):
-    result_dict = rss_to_dict({}, items)
-    json_object = json.dumps(result_dict, indent=4)
-    pdfkit.from_string(json_object, path_to_save_pdf)
+    to_html(items, 'rssparser/data/html_to_pdf.html')
+    pdfkit.from_file('rssparser/data/html_to_pdf.html', path_to_save_pdf)
+    os.remove('rssparser/data/html_to_pdf.html')
