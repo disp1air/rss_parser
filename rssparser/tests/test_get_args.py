@@ -1,5 +1,5 @@
 import unittest
-from get_args import get_args
+from rssparser.get_args import get_args
 
 
 class TestGetArgs(unittest.TestCase):
