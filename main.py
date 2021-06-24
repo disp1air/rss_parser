@@ -1,3 +1,4 @@
+import re
 import sys
 import json
 import requests
@@ -41,7 +42,10 @@ def item_to_dict(item):
 
     for element in item:
         if element.tag and element.text:
-            result_item[element.tag] = element.text
+            if re.match(r'\s*{.*}\s*', element.tag):
+                result_item[re.sub(r'\s*{.*}\s*', '', element.tag)] = element.text
+            else:
+                result_item[element.tag] = element.text
         if element.attrib:
             result_item[f'{element.tag}_attrib'] = {}
             for attrib in element.attrib:
@@ -64,7 +68,7 @@ def main():
         sys.exit(args.version)
 
     if args.source:
-        items_list = get_data_from_non_local('https://news.yahoo.com/rss/')
+        items_list = get_data_from_non_local(args.source)
     else:
         items_list = get_data_from_local()
 
