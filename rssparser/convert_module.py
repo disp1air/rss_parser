@@ -1,7 +1,33 @@
+import re
 import os
 import json
 import sys
 import pdfkit
+
+
+def rss_items_to_list(list_of_items):
+    result = []
+    for item in list_of_items:
+        parsed_item = item_to_dict(item)
+        result.append(parsed_item)
+    return result
+
+
+def item_to_dict(item):
+    result_item = {}
+
+    for element in item:
+        if element.tag and element.text:
+            if re.match(r'\s*{.*}\s*', element.tag):
+                result_item[re.sub(r'\s*{.*}\s*', '', element.tag)] = element.text
+            else:
+                result_item[element.tag] = element.text
+        if element.attrib:
+            result_item[f'{element.tag}_attrib'] = {}
+            for attrib in element.attrib:
+                result_item[f'{element.tag}_attrib'][attrib] = element.attrib[attrib]
+
+    return result_item
 
 
 def to_json(items):
