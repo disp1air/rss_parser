@@ -10,6 +10,10 @@ from rssparser.store_module import store_data_to_local, get_data_from_local
 
 
 def get_data_from_non_local(url):
+    """Method used when args.source is specified.
+    Parse all the rss structure to the list of dicts,
+    save this list of dicts locally and returns it.
+    """
     response = requests.get(url)
     tree = ElementTree.fromstring(response.text)
     items = get_rss_items(tree)
@@ -19,6 +23,8 @@ def get_data_from_non_local(url):
 
 
 def main():
+    """Chechs the specified args and calls the appropriate method.
+    """
     args = get_args()
 
     if args.version:
@@ -37,9 +43,9 @@ def main():
     if args.verbose:
         print_verbose(items_list)
     if args.to_html:
-        to_html(items_list)
+        to_html(items_list, args.to_html)
     if args.to_pdf:
-        to_pdf(items_list)
+        to_pdf(items_list, args.to_pdf)
 
 
 if __name__ == '__main__':

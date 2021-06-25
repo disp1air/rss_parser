@@ -6,6 +6,8 @@ import pdfkit
 
 
 def rss_items_to_list(list_of_items):
+    """Converts rss items to list and returns this list
+    """
     result = []
     for item in list_of_items:
         parsed_item = item_to_dict(item)
@@ -14,6 +16,8 @@ def rss_items_to_list(list_of_items):
 
 
 def item_to_dict(item):
+    """Converts rss item to dict and returns this dict.
+    """
     result_item = {}
 
     for element in item:
@@ -48,6 +52,8 @@ def rss_to_dict(items):
 
 
 def to_html(items, path_to_save_html):
+    """Creates the html file
+    """
     result_str = ''
     html_header = '''<!DOCTYPE html><html lang="en"><head>
         <meta charset="UTF-8">
@@ -79,6 +85,10 @@ def to_html(items, path_to_save_html):
 
 
 def to_pdf(items, path_to_save_pdf):
+    """Creates the temporary html_to_pdf.html file that will be located in
+    the rssparser/data/ folder. With pdfkit library converts this html file to
+    the pdf file specified in --to-pdf arg. And removes the temporary html file.
+    """
     to_html(items, 'rssparser/data/html_to_pdf.html')
     pdfkit.from_file('rssparser/data/html_to_pdf.html', path_to_save_pdf)
     os.remove('rssparser/data/html_to_pdf.html')
